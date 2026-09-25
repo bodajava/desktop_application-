@@ -274,7 +274,8 @@ flowchart TB
 ### 2.8 Internationalisation and right-to-left
 
 - **Text.** Two UTF-8 bundles hold all text; FXML uses `%key`, code uses `Messages.get(key, args)`. The
-  language is chosen on the login screen and remembered per OS user (Java Preferences).
+  language is chosen on the login screen, or switched from the top bar without signing out (the frame is
+  rebuilt on the same page), and remembered per OS user (Java Preferences).
 - **Layout.** In Arabic the scene root gets `NodeOrientation.RIGHT_TO_LEFT`, which mirrors all layout,
   tables and dialogs.
 - **Fonts.** Arabic uses Tahoma or Geeza Pro, because JavaFX's fallback font drops spaces between Arabic
@@ -283,6 +284,28 @@ flowchart TB
   (`09:00-11:00`, `16/24`) so the bidi algorithm keeps them as one left-to-right run, in the UI and in PDFs.
 - **Reports.** PDFs are built entirely from RTL table cells (OpenPDF only shapes Arabic there). Excel sheets
   are set right-to-left.
+
+### 2.9 Design system and light / dark themes
+
+The UI follows the **Graphite Shell** design system: warm graphite surfaces, bone-coloured text, one muted
+sage accent (`#9cb380`) reserved for the primary action, the active page and the highlighted chart
+value, 3 / 5 / 8 px radii, and Inter for prose with JetBrains Mono for buttons, labels and figures
+(compact density, 13 px, for a data-heavy desktop app).
+
+- **Tokens.** All colours in `app.css` are named tokens (`-gs-shell`, `-gs-pane`, `-gs-ink`, `-gs-accent`
+  and so on). Controls, popups and charts are styled only through them, including JavaFX's own base
+  colours, so built-in controls such as date pickers and scroll bars follow the theme too.
+- **Two themes.** Dark is the system's native look and the default. The light theme is the same system
+  inverted (bone background, graphite text); it only redefines the tokens on `.root.theme-light`.
+  Accent-coloured and status text is darkened there to keep WCAG AA contrast.
+- **Switching.** Use the **Dark / Light** switch on the login screen, or the **Light mode / Dark mode**
+  button in the top bar. `ui/Theme` toggles one style class on the root of every open window, including
+  dialogs and popups, so the change is instant and nothing reloads. The choice is remembered per OS user.
+- **Status colours.** Besides sage, only the red and amber of the staffing alerts are used (red
+  `#EF4444`, the system's input-error colour, and a muted amber).
+- **Fonts.** At start-up `ui/AppFonts` registers the Inter and JetBrains Mono TTF files (SIL Open Font
+  License) placed in `resources/com/examhalls/fonts`, so lab PCs need nothing installed. The files are not
+  in the repository yet; until they are added, JavaFX uses the system font. Arabic keeps Tahoma (see 2.8).
 
 ---
 
@@ -669,6 +692,8 @@ permission.
   the language for every screen and report, and the choice is remembered.
 - **Status bar.** Shows whether the database is reachable. Successful actions show a green confirmation in
   the top bar, and errors explain what to do, in the current language.
+- **Language and theme.** The two buttons on the right of the top bar switch English / العربية and
+  light / dark mode at any time, without signing out. Both choices are remembered.
 - **Sign out.** Bottom of the sidebar. After 15 minutes without keyboard or mouse activity the
   application signs out by itself, closes any open dialog and explains why on the sign-in screen.
 - **Dashboard** (Admin, Control Officer, Committee Head). Five KPI cards: active exams, seated

@@ -7,6 +7,7 @@ import com.examhalls.security.CredentialPolicy;
 import com.examhalls.service.ServiceRegistry;
 import com.examhalls.ui.FxAsync;
 import com.examhalls.ui.Navigator;
+import com.examhalls.ui.Theme;
 import com.examhalls.util.Messages;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,10 +38,13 @@ public class LoginController {
     @FXML private ProgressIndicator spinner;
     @FXML private ToggleButton englishToggle;
     @FXML private ToggleButton arabicToggle;
+    @FXML private ToggleButton darkToggle;
+    @FXML private ToggleButton lightToggle;
 
     @FXML
     private void initialize() {
         (Messages.isRightToLeft() ? arabicToggle : englishToggle).setSelected(true);
+        (Theme.current() == Theme.LIGHT ? lightToggle : darkToggle).setSelected(true);
         usernameField.setTextFormatter(maxLength(CredentialPolicy.USERNAME_MAX_CHARS));
         passwordField.setTextFormatter(maxLength(CredentialPolicy.LOGIN_PASSWORD_MAX_CHARS));
         usernameField.setText(rememberedUsername);
@@ -106,6 +110,15 @@ public class LoginController {
             change.setText(added.substring(0, added.length() - excess));
             return change;
         });
+    }
+
+    @FXML
+    private void onTheme() {
+        boolean light = lightToggle.isSelected();
+        if (!light && !darkToggle.isSelected()) {           // keep one toggle selected
+            darkToggle.setSelected(true);
+        }
+        Theme.set(light ? Theme.LIGHT : Theme.DARK);
     }
 
     @FXML

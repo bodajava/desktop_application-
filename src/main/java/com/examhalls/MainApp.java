@@ -1,7 +1,9 @@
 package com.examhalls;
 
 import com.examhalls.config.DatabaseConnection;
+import com.examhalls.ui.AppFonts;
 import com.examhalls.ui.Navigator;
+import com.examhalls.ui.Theme;
 import com.examhalls.util.Messages;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -29,6 +31,8 @@ public class MainApp extends Application {
 
         Messages.setLocale(savedLanguage());
         hostServices = getHostServices();
+        AppFonts.load();
+        Theme.install();
 
         Scene scene = new Scene(new StackPane(), 1280, 800);
         scene.getStylesheets().add(resource("css/app.css").toExternalForm());
@@ -38,7 +42,7 @@ public class MainApp extends Application {
         stage.setScene(scene);
         Navigator.init(stage, scene).showLogin();
         stage.show();
-        log.info("UI started ({})", Messages.currentLocale());
+        log.info("UI started ({}, {} theme)", Messages.currentLocale(), Theme.current());
     }
 
     @Override

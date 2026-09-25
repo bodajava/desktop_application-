@@ -61,12 +61,16 @@ public final class Navigator {
         }
     }
 
-    /** RTL orientation plus an Arabic-capable font (see .rtl in app.css) for the current language. */
+    /**
+     * RTL orientation plus an Arabic-capable font (see .rtl in app.css) for the current language,
+     * and the current light/dark theme when this node becomes a window's root.
+     */
     public static void applyLanguage(Parent root) {
         root.setNodeOrientation(orientation());
         if (Messages.isRightToLeft()) {
             root.getStyleClass().add("rtl");
         }
+        Theme.apply(root);
     }
 
     public static NodeOrientation orientation() {
@@ -88,11 +92,20 @@ public final class Navigator {
     }
 
     public void showShell(AuthenticatedUser user) {
+        showShell(user, homeFor(user.role()));
+    }
+
+    /** Builds the signed-in frame and opens {@code view}; replaces (and disposes) any previous frame. */
+    public void showShell(AuthenticatedUser user, View view) {
+        if (shell != null) {
+            shell.dispose();
+        }
         Loaded<ShellController> loaded = load("MainLayout");
         shell = loaded.controller();
         scene.setRoot(loaded.root());
+        stage.setTitle(Messages.get("app.title"));
         shell.start(user);
-        shell.navigate(homeFor(user.role()), null);
+        shell.navigate(view, null);
     }
 
     public ShellController shell() {

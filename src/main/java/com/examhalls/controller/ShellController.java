@@ -1,13 +1,16 @@
 package com.examhalls.controller;
 
+import com.examhalls.MainApp;
 import com.examhalls.config.AppSettings;
 import com.examhalls.config.DatabaseConnection;
 import com.examhalls.security.AuthenticatedUser;
 import com.examhalls.security.IdleTimer;
+import com.examhalls.security.UserSession;
 import com.examhalls.service.ServiceRegistry;
 import com.examhalls.util.Formats;
 import com.examhalls.ui.FxAsync;
 import com.examhalls.ui.Navigator;
+import com.examhalls.ui.Theme;
 import com.examhalls.ui.View;
 import com.examhalls.util.Messages;
 import javafx.animation.Animation;
@@ -63,9 +66,12 @@ public class ShellController {
     @FXML private Label toastLabel;
     @FXML private Label dbStatusDot;
     @FXML private Label dbStatusLabel;
+    @FXML private Button languageButton;
+    @FXML private Button themeButton;
 
     private final Map<View, Button> navButtons = new EnumMap<>(View.class);
     private AuthenticatedUser user;
+    private View currentView;
     private SequentialTransition toastAnimation;
 
     private IdleTimer idleTimer;
@@ -103,6 +109,34 @@ public class ShellController {
         }
         refreshDbStatus();
         startIdleTimeout();
+        updateSwitchLabels();
+    }
+
+    /** Switches English / Arabic without signing out: the frame is rebuilt on the same page. */
+    @FXML
+    private void onToggleLanguage() {
+        MainApp.setLanguage(Messages.isRightToLeft() ? Messages.ENGLISH : Messages.ARABIC);
+        AuthenticatedUser me = UserSession.get().currentUser().orElse(null);
+        if (me != null) {
+            Navigator.get().showShell(me, currentView != null ? currentView : Navigator.homeFor(me.role()));
+        }
+    }
+
+    @FXML
+    private void onToggleTheme() {
+        Theme.set(Theme.current().other());
+        updateSwitchLabels();
+    }
+
+    /** Each switch names what it switches to: "العربية" / "English", "Light mode" / "Dark mode". */
+    private void updateSwitchLabels() {
+        boolean arabic = Messages.isRightToLeft();
+        languageButton.setText(arabic ? "English" : "العربية");
+        languageButton.getStyleClass().remove("script-arabic");
+        if (!arabic) {
+            languageButton.getStyleClass().add("script-arabic");
+        }
+        themeButton.setText(Messages.get(Theme.current() == Theme.DARK ? "theme.toLight" : "theme.toDark"));
     }
 
     private void startIdleTimeout() {
@@ -175,6 +209,7 @@ public class ShellController {
         }
         Navigator.Loaded<C> loaded = Navigator.load(view.fxml());
         contentArea.getChildren().setAll(loaded.root());
+        currentView = view;
         navButtons.values().forEach(b -> b.getStyleClass().remove("active"));
         Button active = navButtons.get(view);
         if (active != null) {

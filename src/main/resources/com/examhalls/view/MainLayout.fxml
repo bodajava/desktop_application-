@@ -28,7 +28,7 @@
             <VBox styleClass="sidebar-footer">
                 <Label fx:id="userNameLabel" styleClass="sidebar-user"/>
                 <Label fx:id="userRoleLabel" styleClass="role-chip"/>
-                <Button text="%nav.signOut" onAction="#onSignOut" styleClass="button-sidebar" maxWidth="Infinity"/>
+                <Button text="%nav.signOut" onAction="#onSignOut" styleClass="button-outline" maxWidth="Infinity"/>
             </VBox>
         </VBox>
     </left>
@@ -44,6 +44,12 @@
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
                     <Label fx:id="toastLabel" styleClass="toast" visible="false"/>
+                    <HBox styleClass="topbar-actions">
+                        <Button fx:id="languageButton" onAction="#onToggleLanguage" styleClass="button-outline"
+                                minWidth="-Infinity"/>
+                        <Button fx:id="themeButton" onAction="#onToggleTheme" styleClass="button-outline"
+                                minWidth="-Infinity"/>
+                    </HBox>
                 </HBox>
             </top>
             <center>

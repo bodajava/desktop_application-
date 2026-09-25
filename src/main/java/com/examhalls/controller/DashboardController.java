@@ -67,9 +67,10 @@ public class DashboardController {
     /** Slice order and colours of the allocation donut (also used by the legend and badges). */
     private static final List<AllocationState> DONUT_ORDER = List.of(
             AllocationState.FULL, AllocationState.PARTIAL, AllocationState.UNASSIGNED, AllocationState.NOT_SEATED);
-    private static final Map<AllocationState, String> STATE_COLOR = Map.of(
-            AllocationState.FULL, "#16a34a", AllocationState.PARTIAL, "#f59e0b",
-            AllocationState.UNASSIGNED, "#dc2626", AllocationState.NOT_SEATED, "#94a3b8");
+    /** Style classes of the donut slices and legend swatches; app.css maps them to theme tokens. */
+    private static final Map<AllocationState, String> STATE_CLASS = Map.of(
+            AllocationState.FULL, "state-full", AllocationState.PARTIAL, "state-partial",
+            AllocationState.UNASSIGNED, "state-unassigned", AllocationState.NOT_SEATED, "state-not-seated");
     private static final Map<AllocationState, String> STATE_BADGE = Map.of(
             AllocationState.FULL, "badge-staffed", AllocationState.PARTIAL, "badge-seated",
             AllocationState.UNASSIGNED, "badge-blocked", AllocationState.NOT_SEATED, "badge-not-seated");
@@ -240,8 +241,8 @@ public class DashboardController {
         y.setForceZeroInRange(true);
         BarChart<String, Number> chart = new BarChart<>(x, y);
         chart.setAnimated(false);
-        chart.setCategoryGap(24);
-        chart.setBarGap(3);
+        chart.setCategoryGap(56);
+        chart.setBarGap(4);
         chart.setPrefHeight(300);
         chart.getStyleClass().addAll("dash-chart", "capacity-chart");
         chart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -296,19 +297,15 @@ public class DashboardController {
         pie.setStartAngle(90);
         pie.setPrefSize(260, 240);
         pie.getStyleClass().add("dash-donut");
+        Map<PieChart.Data, AllocationState> slices = new java.util.LinkedHashMap<>();
         for (AllocationState state : DONUT_ORDER) {
             int count = allocation.getOrDefault(state, 0);
             String label = Formats.enumLabel("dashboard.state", state);
-            String share = label + ": " + count + " (" + percent(count / (double) total) + ")";
             if (count > 0) {
-                PieChart.Data slice = new PieChart.Data(label, count);
-                pie.getData().add(slice);
-                slice.getNode().setStyle("-fx-pie-color: " + STATE_COLOR.get(state) + ";");
-                install(slice.getNode(), share);
+                slices.put(new PieChart.Data(label, count), state);
             }
             Region swatch = new Region();
-            swatch.getStyleClass().add("legend-swatch");
-            swatch.setStyle("-fx-background-color: " + STATE_COLOR.get(state) + ";");
+            swatch.getStyleClass().addAll("legend-swatch", STATE_CLASS.get(state));
             Label name = new Label(label);
             Label value = new Label(String.valueOf(count));
             value.getStyleClass().add("dash-legend-count");
@@ -317,6 +314,14 @@ public class DashboardController {
             item.getStyleClass().add("dash-legend-item");
             donutLegend.getChildren().add(item);
         }
+        // PieChart resets every slice's style classes whenever a slice is added, so the state
+        // classes (colours come from the theme tokens in app.css) are set once all slices exist.
+        pie.getData().setAll(slices.keySet());
+        slices.forEach((slice, state) -> {
+            slice.getNode().getStyleClass().add(STATE_CLASS.get(state));
+            install(slice.getNode(), slice.getName() + ": " + (int) slice.getPieValue()
+                    + " (" + percent(slice.getPieValue() / total) + ")");
+        });
 
         Circle hole = new Circle();
         hole.getStyleClass().add("donut-hole");
@@ -354,7 +359,7 @@ public class DashboardController {
         BarChart<Number, String> chart = new BarChart<>(x, y);
         chart.setAnimated(false);
         chart.setLegendVisible(false);
-        chart.setCategoryGap(10);
+        chart.setCategoryGap(22);
         chart.setPrefHeight(90 + 34 * departments.size());
         chart.getStyleClass().addAll("dash-chart", "dept-chart");
         chart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -368,11 +373,11 @@ public class DashboardController {
             series.getData().add(p);
         }
         chart.getData().setAll(List.of(series));
+        DeptWorkload busiest = departments.get(0);          // sorted by average hours, highest first
         for (XYChart.Data<Number, String> p : series.getData()) {
             DeptWorkload w = (DeptWorkload) p.getExtraValue();
-            boolean above = w.averageHours().compareTo(schoolAverage) > 0;
-            if (above) {
-                p.getNode().getStyleClass().add("above-average");
+            if (w == busiest) {
+                p.getNode().getStyleClass().add("highlight");  // one highlight per chart, in sage
             }
             install(p.getNode(), Messages.get("dashboard.chart.deptTip", w.department(), Formats.hours(w.averageHours()),
                     w.teachers(), Formats.hours(w.totalHours())));

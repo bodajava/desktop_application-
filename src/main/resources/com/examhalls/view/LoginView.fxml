@@ -50,11 +50,20 @@
         <HBox styleClass="lang-switch">
             <fx:define>
                 <ToggleGroup fx:id="languageGroup"/>
+                <ToggleGroup fx:id="themeGroup"/>
             </fx:define>
-            <ToggleButton fx:id="englishToggle" text="English" toggleGroup="$languageGroup" onAction="#onLanguage"
-                          styleClass="lang-toggle"/>
-            <ToggleButton fx:id="arabicToggle" text="العربية" toggleGroup="$languageGroup" onAction="#onLanguage"
-                          styleClass="lang-toggle"/>
+            <HBox styleClass="segmented">
+                <ToggleButton fx:id="englishToggle" text="English" toggleGroup="$languageGroup" onAction="#onLanguage"
+                              styleClass="lang-toggle"/>
+                <ToggleButton fx:id="arabicToggle" text="العربية" toggleGroup="$languageGroup" onAction="#onLanguage"
+                              styleClass="lang-toggle, script-arabic"/>
+            </HBox>
+            <HBox styleClass="segmented">
+                <ToggleButton fx:id="darkToggle" text="%theme.dark" toggleGroup="$themeGroup" onAction="#onTheme"
+                              styleClass="lang-toggle"/>
+                <ToggleButton fx:id="lightToggle" text="%theme.light" toggleGroup="$themeGroup" onAction="#onTheme"
+                              styleClass="lang-toggle"/>
+            </HBox>
         </HBox>
     </VBox>
 
