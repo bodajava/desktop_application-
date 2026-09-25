@@ -4,7 +4,10 @@ import com.examhalls.MainApp;
 import com.examhalls.exception.AppException;
 import com.examhalls.security.AuthenticatedUser;
 import com.examhalls.security.CredentialPolicy;
+import com.examhalls.security.UserSession;
 import com.examhalls.service.ServiceRegistry;
+import com.examhalls.ui.Alerts;
+import com.examhalls.ui.FormDialog;
 import com.examhalls.ui.FxAsync;
 import com.examhalls.ui.Navigator;
 import com.examhalls.ui.Theme;
@@ -82,7 +85,30 @@ public class LoginController {
         passwordField.clear();
         rememberedUsername = "";
         expiredAfterMinutes = 0;
-        Navigator.get().showShell(user);
+        if (user.mustChangePassword() && !forceChangePassword()) {
+            ServiceRegistry.get().authService().logout();
+            showError(Messages.get("login.mustChangePassword.cancelled"));
+            return;
+        }
+        Navigator.get().showShell(UserSession.get().requireUser());
+    }
+
+    /** @return true if a new password was set */
+    private boolean forceChangePassword() {
+        FormDialog f = new FormDialog("login.mustChangePassword.title")
+                .subtitle(Messages.get("login.mustChangePassword.subtitle"))
+                .password("new", "login.mustChangePassword.newPassword", true)
+                .password("confirm", "login.mustChangePassword.confirmPassword", true)
+                .validator(d -> d.text("new").equals(d.text("confirm")) ? java.util.Optional.empty()
+                        : java.util.Optional.of(Messages.get("login.mustChangePassword.mismatch")));
+        f.onSave(() -> ServiceRegistry.get().authService()
+                .changePasswordForCurrentSession(f.text("new").toCharArray()));
+        boolean saved = f.showAndWait(Navigator.get().stage());
+        if (saved) {
+            Alerts.info(Navigator.get().stage(), Messages.get("login.mustChangePassword.doneTitle"),
+                    Messages.get("login.mustChangePassword.done"));
+        }
+        return saved;
     }
 
     private void onFailed(AppException e) {

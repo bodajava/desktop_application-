@@ -11,6 +11,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -75,6 +76,11 @@ public final class FormDialog {
     public FormDialog text(String id, String labelKey, String value, boolean required) {
         TextField t = new TextField(value == null ? "" : value);
         return add(id, labelKey, t, required);
+    }
+
+    public FormDialog password(String id, String labelKey, boolean required) {
+        PasswordField p = new PasswordField();
+        return add(id, labelKey, p, required);
     }
 
     public FormDialog textArea(String id, String labelKey, String value) {

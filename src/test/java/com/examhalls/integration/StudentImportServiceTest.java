@@ -2,6 +2,7 @@ package com.examhalls.integration;
 
 import com.examhalls.config.DatabaseConnection;
 import com.examhalls.config.TransactionManager;
+import com.examhalls.exception.AppException;
 import com.examhalls.model.Student;
 import com.examhalls.security.AuthenticatedUser;
 import com.examhalls.service.AuthService;
@@ -82,6 +83,30 @@ class StudentImportServiceTest {
             assertEquals(StudentImportService.Outcome.LOGIN_ALREADY_EXISTED, second.get(0).outcome());
             long matches = data.students().stream().filter(s -> s.studentCode().equals("STU-IMPORT-01")).count();
             assertEquals(1, matches, "no duplicate student row on re-import");
+            return null;
+        });
+    }
+
+    @Test
+    void newStudentMustChangePasswordOnFirstLogin() throws Exception {
+        tx.runAndRollback(() -> {
+            imports.importRows(List.of(
+                    new StudentImportService.Row("stu-import-03", "Import Test Three", "Grade 10", "a", null)));
+
+            AuthenticatedUser first = auth.login("stu-import-03", "STU-IMPORT-03".toCharArray());
+            assertTrue(first.mustChangePassword(), "initial login must be flagged");
+
+            reg.authService().changePasswordForCurrentSession("NewPass2026".toCharArray());
+            auth.logout();
+
+            AppException oldPasswordRejected = assertThrows(AppException.class,
+                    () -> auth.login("stu-import-03", "STU-IMPORT-03".toCharArray()));
+            assertEquals("INVALID_CREDENTIALS", oldPasswordRejected.code().name());
+
+            AuthenticatedUser second = auth.login("stu-import-03", "NewPass2026".toCharArray());
+            assertFalse(second.mustChangePassword(), "cleared after the forced change");
+            auth.logout();
+            auth.login("admin", "Admin@2026".toCharArray());
             return null;
         });
     }

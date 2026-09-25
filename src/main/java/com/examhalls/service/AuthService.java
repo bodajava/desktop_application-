@@ -83,7 +83,7 @@ public class AuthService {
 
             User user = found.get();
             AuthenticatedUser authenticated = new AuthenticatedUser(user.userId(), user.username(), user.fullName(),
-                    RoleType.fromDb(user.roleName()), user.teacherId(), Instant.now());
+                    RoleType.fromDb(user.roleName()), user.teacherId(), user.mustChangePassword(), Instant.now());
             attempts.recordSuccess(username);
             session.start(authenticated);
             log.info("User '{}' signed in as {}", authenticated.username(), authenticated.role());
@@ -112,19 +112,38 @@ public class AuthService {
     public void changePassword(char[] currentPassword, char[] newPassword) {
         try {
             AuthenticatedUser me = session.requireUser();
-            if (!PasswordHasher.isStrongEnough(newPassword)) {
-                throw new AppException(ErrorCode.WEAK_PASSWORD);
-            }
             User user = userDao.findByUsernameWithHash(me.username())
                     .orElseThrow(() -> new AppException(ErrorCode.NOT_AUTHENTICATED));
             if (!hasher.verify(currentPassword, user.passwordHash())) {
                 throw new AppException(ErrorCode.INVALID_CREDENTIALS);
             }
-            userDao.updatePasswordHash(me.userId(), hasher.hash(newPassword));
-            log.info("User '{}' changed their password", me.username());
+            applyNewPassword(me, newPassword);
         } finally {
             PasswordHasher.wipe(currentPassword);
             PasswordHasher.wipe(newPassword);
         }
+    }
+
+    /**
+     * For the forced first-login change: the session is already authenticated (that stands in for
+     * the current password), so no re-verification is asked of the user.
+     */
+    public void changePasswordForCurrentSession(char[] newPassword) {
+        try {
+            applyNewPassword(session.requireUser(), newPassword);
+        } finally {
+            PasswordHasher.wipe(newPassword);
+        }
+    }
+
+    private void applyNewPassword(AuthenticatedUser me, char[] newPassword) {
+        if (!PasswordHasher.isStrongEnough(newPassword)) {
+            throw new AppException(ErrorCode.WEAK_PASSWORD);
+        }
+        userDao.updatePasswordHash(me.userId(), hasher.hash(newPassword));
+        if (me.mustChangePassword()) {
+            session.start(me.withMustChangePassword(false));
+        }
+        log.info("User '{}' changed their password", me.username());
     }
 }
