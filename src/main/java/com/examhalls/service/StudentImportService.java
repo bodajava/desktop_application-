@@ -72,7 +72,9 @@ public class StudentImportService {
                 results.add(r);
                 if (r.outcome() == Outcome.CREATED_WITH_LOGIN) {
                     created++;
-                } else if (r.outcome() != Outcome.ERROR) {
+                } else if (r.outcome() == Outcome.ERROR) {
+                    errors++;
+                } else {
                     updated++;
                 }
             } catch (AppException ex) {
