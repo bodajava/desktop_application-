@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
  * {@code UserDao.findByUsernameWithHash}; toString never prints it.
  */
 public record User(Long userId, String username, String passwordHash, String fullName,
-                   Long roleId, String roleName, Long teacherId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                   Long roleId, String roleName, Long teacherId, Long studentId, boolean mustChangePassword,
+                   LocalDateTime createdAt, LocalDateTime updatedAt) {
 
     public User withoutHash() {
-        return new User(userId, username, null, fullName, roleId, roleName, teacherId, createdAt, updatedAt);
+        return new User(userId, username, null, fullName, roleId, roleName, teacherId, studentId, mustChangePassword,
+                createdAt, updatedAt);
     }
 
     @Override

@@ -81,7 +81,7 @@ public class UserManagementService {
             validate(form);
             requireStrong(password);
             long id = run(() -> userDao.insert(new User(null, form.username().strip(), hasher.hash(password),
-                    form.fullName().trim(), roleId(form.role()), null, form.teacherId(), null, null)));
+                    form.fullName().trim(), roleId(form.role()), null, form.teacherId(), null, false, null, null)));
             log.info("{} created user '{}' ({})", me.username(), form.username(), form.role());
             return id;
         } finally {
@@ -99,7 +99,7 @@ public class UserManagementService {
                 requireAnotherAdmin(userId);
             }
             userDao.update(new User(userId, form.username().strip(), null, form.fullName().trim(), roleId(form.role()),
-                    null, form.teacherId(), null, null));
+                    null, form.teacherId(), null, false, null, null));
             return null;
         });
         log.info("{} updated user #{} -> {} ({})", me.username(), userId, form.username(), form.role());

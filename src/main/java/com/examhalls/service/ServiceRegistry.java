@@ -65,6 +65,7 @@ public final class ServiceRegistry {
     private final ReportService reportService;
     private final UserManagementService userManagementService;
     private final MasterDataService masterDataService;
+    private final StudentImportService studentImportService;
 
     private ServiceRegistry(TransactionManager tx) {
         this.tx = tx;
@@ -98,6 +99,7 @@ public final class ServiceRegistry {
         this.occupancyService = new OccupancyService(session, examScheduleDao, examPeriodDao, roomDao, reportDao);
         this.reportService = new ReportService(session, examScheduleDao, seatingDao, reportDao,
                 examManagementService, occupancyService, teacherDao);
+        this.studentImportService = new StudentImportService(tx, session, studentDao, userDao, roleDao, hasher);
     }
 
     /** Application-wide instance on the HikariCP pool (created on first use). */
@@ -140,4 +142,5 @@ public final class ServiceRegistry {
     public ReportDao reportDao() { return reportDao; }
     public UserManagementService userManagementService() { return userManagementService; }
     public MasterDataService masterDataService() { return masterDataService; }
+    public StudentImportService studentImportService() { return studentImportService; }
 }

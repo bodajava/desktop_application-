@@ -12,7 +12,7 @@ import java.util.Optional;
 public class StudentDaoImpl extends JdbcSupport implements StudentDao {
 
     private static final String SELECT =
-            "SELECT student_id, student_code, full_name, grade_level, section, has_special_needs FROM students";
+            "SELECT student_id, student_code, full_name, grade_level, section, has_special_needs, email FROM students";
 
     public StudentDaoImpl(TransactionManager tx) {
         super(tx);
@@ -42,21 +42,23 @@ public class StudentDaoImpl extends JdbcSupport implements StudentDao {
     @Override
     public long insert(Student s) {
         return insert("""
-                INSERT INTO students (student_code, full_name, grade_level, section, has_special_needs)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO students (student_code, full_name, grade_level, section, has_special_needs, email)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """, "STUDENT_ID", ps -> {
             ps.setString(1, s.studentCode());
             ps.setString(2, s.fullName());
             ps.setString(3, s.gradeLevel());
             ps.setString(4, s.section());
             ps.setString(5, flag(s.hasSpecialNeeds()));
+            ps.setString(6, s.email());
         });
     }
 
     @Override
     public void update(Student s) {
         updateExactlyOne("""
-                UPDATE students SET student_code = ?, full_name = ?, grade_level = ?, section = ?, has_special_needs = ?
+                UPDATE students SET student_code = ?, full_name = ?, grade_level = ?, section = ?, has_special_needs = ?,
+                       email = ?
                 WHERE  student_id = ?
                 """, "Student", s.studentId(), ps -> {
             ps.setString(1, s.studentCode());
@@ -64,7 +66,8 @@ public class StudentDaoImpl extends JdbcSupport implements StudentDao {
             ps.setString(3, s.gradeLevel());
             ps.setString(4, s.section());
             ps.setString(5, flag(s.hasSpecialNeeds()));
-            ps.setLong(6, s.studentId());
+            ps.setString(6, s.email());
+            ps.setLong(7, s.studentId());
         });
     }
 
@@ -75,6 +78,7 @@ public class StudentDaoImpl extends JdbcSupport implements StudentDao {
 
     private static Student map(ResultSet rs) throws SQLException {
         return new Student(rs.getLong("student_id"), rs.getString("student_code"), rs.getString("full_name"),
-                rs.getString("grade_level"), rs.getString("section"), getFlag(rs, "has_special_needs"));
+                rs.getString("grade_level"), rs.getString("section"), getFlag(rs, "has_special_needs"),
+                rs.getString("email"));
     }
 }

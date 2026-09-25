@@ -13,7 +13,7 @@ public class UserDaoImpl extends JdbcSupport implements UserDao {
 
     private static final String SELECT_NO_HASH = """
             SELECT u.user_id, u.username, NULL AS password_hash, u.full_name, u.role_id, r.role_name,
-                   u.teacher_id, u.created_at, u.updated_at
+                   u.teacher_id, u.student_id, u.must_change_password, u.created_at, u.updated_at
             FROM   v_users u JOIN roles r ON r.role_id = u.role_id
             """;
 
@@ -35,7 +35,7 @@ public class UserDaoImpl extends JdbcSupport implements UserDao {
     public Optional<User> findByUsernameWithHash(String username) {
         String sql = """
                 SELECT u.user_id, u.username, u.password_hash, u.full_name, u.role_id, r.role_name,
-                       u.teacher_id, u.created_at, u.updated_at
+                       u.teacher_id, u.student_id, u.must_change_password, u.created_at, u.updated_at
                 FROM   v_users u JOIN roles r ON r.role_id = u.role_id
                 WHERE  LOWER(u.username) = LOWER(?)
                 """;
@@ -43,17 +43,27 @@ public class UserDaoImpl extends JdbcSupport implements UserDao {
     }
 
     @Override
+    public Optional<Long> findUserIdByStudentId(long studentId) {
+        return queryOne("SELECT user_id FROM v_users WHERE student_id = ?", ps -> ps.setLong(1, studentId),
+                rs -> rs.getLong("user_id"));
+    }
+
+    @Override
     public long insert(User user) {
         if (user.passwordHash() == null) {
             throw new IllegalArgumentException("A password hash is required to create a user");
         }
-        return insert("INSERT INTO users (username, password_hash, full_name, role_id, teacher_id) VALUES (?, ?, ?, ?, ?)",
-                "USER_ID", ps -> {
+        return insert("""
+                INSERT INTO users (username, password_hash, full_name, role_id, teacher_id, student_id, must_change_password)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, "USER_ID", ps -> {
                     ps.setString(1, user.username());
                     ps.setString(2, user.passwordHash());
                     ps.setString(3, user.fullName());
                     ps.setLong(4, user.roleId());
                     setNullableLong(ps, 5, user.teacherId());
+                    setNullableLong(ps, 6, user.studentId());
+                    ps.setString(7, flag(user.mustChangePassword()));
                 });
     }
 
@@ -73,8 +83,10 @@ public class UserDaoImpl extends JdbcSupport implements UserDao {
 
     @Override
     public void updatePasswordHash(long userId, String newHash) {
-        updateExactlyOne("UPDATE users SET password_hash = ? WHERE user_id = ? AND is_deleted = 'N'",
-                "User", userId, ps -> {
+        updateExactlyOne("""
+                UPDATE users SET password_hash = ?, must_change_password = 'N'
+                WHERE  user_id = ? AND is_deleted = 'N'
+                """, "User", userId, ps -> {
                     ps.setString(1, newHash);
                     ps.setLong(2, userId);
                 });
@@ -89,6 +101,7 @@ public class UserDaoImpl extends JdbcSupport implements UserDao {
     private static User map(ResultSet rs) throws SQLException {
         return new User(rs.getLong("user_id"), rs.getString("username"), rs.getString("password_hash"),
                 rs.getString("full_name"), rs.getLong("role_id"), rs.getString("role_name"),
-                getNullableLong(rs, "teacher_id"), getDateTime(rs, "created_at"), getDateTime(rs, "updated_at"));
+                getNullableLong(rs, "teacher_id"), getNullableLong(rs, "student_id"),
+                getFlag(rs, "must_change_password"), getDateTime(rs, "created_at"), getDateTime(rs, "updated_at"));
     }
 }

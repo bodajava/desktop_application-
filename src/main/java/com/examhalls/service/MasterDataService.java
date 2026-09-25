@@ -235,9 +235,11 @@ public class MasterDataService {
         check(bad, !blank(s.fullName()) && s.fullName().trim().length() <= 150, "master.field.fullName");
         check(bad, !blank(s.gradeLevel()) && s.gradeLevel().trim().length() <= 30, "master.field.gradeLevel");
         check(bad, s.section() == null || s.section().trim().length() <= 10, "master.field.section");
+        check(bad, blank(s.email()) || s.email().trim().length() <= 150, "master.field.email");
         fail(bad);
         Student clean = new Student(s.studentId(), s.studentCode().trim().toUpperCase(), s.fullName().trim(),
-                s.gradeLevel().trim(), blank(s.section()) ? null : s.section().trim().toUpperCase(), s.hasSpecialNeeds());
+                s.gradeLevel().trim(), blank(s.section()) ? null : s.section().trim().toUpperCase(), s.hasSpecialNeeds(),
+                blank(s.email()) ? null : s.email().trim());
         long id = upsert(clean.studentId(), () -> studentDao.insert(clean), () -> studentDao.update(clean));
         log.info("{} saved student #{} {}", me.username(), id, clean.studentCode());
         return id;

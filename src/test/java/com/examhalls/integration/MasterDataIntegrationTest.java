@@ -135,7 +135,7 @@ class MasterDataIntegrationTest {
             AppException courseInUse = assertThrows(AppException.class, () -> data.deleteCourse(math10Course.courseId()));
             assertEquals("This course has scheduled exams and cannot be deleted.", courseInUse.userMessage(Messages.ENGLISH));
 
-            long sid = data.saveStudent(new Student(null, "stu-10-900", "New Student", "Grade 10", "c", true));
+            long sid = data.saveStudent(new Student(null, "stu-10-900", "New Student", "Grade 10", "c", true, null));
             Student s = data.students().stream().filter(x -> x.studentId() == sid).findFirst().orElseThrow();
             assertEquals("STU-10-900", s.studentCode());
             assertEquals("C", s.section());

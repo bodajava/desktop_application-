@@ -62,7 +62,7 @@ class AuthServiceSecurityTest {
                         lookups.add((String) args[0]);
                         yield "control".equalsIgnoreCase((String) args[0])
                                 ? Optional.of(new User(2L, "control", controlHash, "Control Officer", 2L,
-                                        "CONTROL_OFFICER", null, null, null))
+                                        "CONTROL_OFFICER", null, null, false, null, null))
                                 : Optional.empty();
                     }
                     case "updatePasswordHash" -> null;
