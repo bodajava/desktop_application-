@@ -14,7 +14,8 @@ public enum View {
     ACADEMICS("AcademicsView", Permission.MANAGE_MASTER_DATA, Section.MANAGEMENT),
     STUDENTS("StudentsView", Permission.MANAGE_MASTER_DATA, Section.MANAGEMENT),
     USERS("UsersView", Permission.MANAGE_USERS, Section.MANAGEMENT),
-    MY_DUTIES("MyDutiesView", Permission.VIEW_OWN_SCHEDULE, Section.PERSONAL);
+    MY_DUTIES("MyDutiesView", Permission.VIEW_OWN_SCHEDULE, Section.PERSONAL),
+    MY_EXAMS("MyExamsView", Permission.VIEW_OWN_EXAMS, Section.PERSONAL);
 
     /** Sidebar group headings. */
     public enum Section { OPERATIONS, MANAGEMENT, PERSONAL }

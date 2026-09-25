@@ -83,7 +83,8 @@ public class AuthService {
 
             User user = found.get();
             AuthenticatedUser authenticated = new AuthenticatedUser(user.userId(), user.username(), user.fullName(),
-                    RoleType.fromDb(user.roleName()), user.teacherId(), user.mustChangePassword(), Instant.now());
+                    RoleType.fromDb(user.roleName()), user.teacherId(), user.studentId(), user.mustChangePassword(),
+                    Instant.now());
             attempts.recordSuccess(username);
             session.start(authenticated);
             log.info("User '{}' signed in as {}", authenticated.username(), authenticated.role());

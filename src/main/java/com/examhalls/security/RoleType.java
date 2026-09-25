@@ -20,7 +20,8 @@ import static com.examhalls.security.Permission.*;
  * SUBSTITUTE_PROCTOR     x      x
  * MARK_ATTENDANCE        x      x       x
  * VIEW_ALL_SCHEDULES     x      x       x
- * VIEW_OWN_SCHEDULE      x      x       x      x        x
+ * VIEW_OWN_SCHEDULE      x      x       x      x
+ * VIEW_OWN_EXAMS                                        x
  * VIEW_REPORTS           x      x       x
  * VIEW_AUDIT             x      x
  * </pre>
@@ -31,7 +32,8 @@ public enum RoleType {
             MARK_ATTENDANCE, VIEW_ALL_SCHEDULES, VIEW_OWN_SCHEDULE, VIEW_REPORTS, VIEW_AUDIT)),
     COMMITTEE_HEAD(EnumSet.of(MARK_ATTENDANCE, VIEW_ALL_SCHEDULES, VIEW_OWN_SCHEDULE, VIEW_REPORTS)),
     TEACHER(EnumSet.of(VIEW_OWN_SCHEDULE)),
-    STUDENT(EnumSet.of(VIEW_OWN_SCHEDULE));
+    /** A student's own exams and attendance, not the staff supervision schedule. */
+    STUDENT(EnumSet.of(VIEW_OWN_EXAMS));
 
     private final Set<Permission> permissions;
 

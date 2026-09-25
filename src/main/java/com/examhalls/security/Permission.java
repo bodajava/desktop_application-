@@ -10,6 +10,7 @@ public enum Permission {
     MARK_ATTENDANCE,
     VIEW_ALL_SCHEDULES,
     VIEW_OWN_SCHEDULE,
+    VIEW_OWN_EXAMS,
     VIEW_REPORTS,
     VIEW_AUDIT
 }

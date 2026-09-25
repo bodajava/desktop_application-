@@ -17,6 +17,7 @@ import com.examhalls.model.Room;
 import com.examhalls.model.RoomAllocationSummary;
 import com.examhalls.model.SeatingAllocation;
 import com.examhalls.model.SeatingResult;
+import com.examhalls.model.StudentExamRow;
 import com.examhalls.model.SubstitutionResult;
 import com.examhalls.model.SupervisionAudit;
 import com.examhalls.model.SupervisionRoster;
@@ -102,6 +103,15 @@ public class ExamManagementService {
             return List.of();
         }
         return rosterDao.findUpcomingByTeacher(me.teacherId(), LocalDate.now());
+    }
+
+    /** A student's own upcoming exams, with their seat and attendance for each. */
+    public List<StudentExamRow> getMyExams() {
+        AuthenticatedUser me = session.require(Permission.VIEW_OWN_EXAMS);
+        if (me.studentId() == null) {
+            return List.of();
+        }
+        return seatingDao.findUpcomingByStudent(me.studentId(), LocalDate.now());
     }
 
     /**

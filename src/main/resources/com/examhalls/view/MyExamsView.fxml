@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import com.examhalls.ui.BusyOverlay?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.examhalls.controller.MyExamsController">
+  <VBox styleClass="content">
+    <HBox styleClass="card" alignment="CENTER_LEFT">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label fx:id="headline" styleClass="card-title"/>
+            <Label fx:id="subline" styleClass="muted" wrapText="true"/>
+        </VBox>
+    </HBox>
+    <VBox styleClass="card, table-card" VBox.vgrow="ALWAYS">
+        <TableView fx:id="examTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="dateCol" text="%schedule.col.date" prefWidth="150"/>
+                <TableColumn fx:id="periodCol" text="%schedule.col.period" prefWidth="130"/>
+                <TableColumn fx:id="courseCol" text="%schedule.col.course" prefWidth="220"/>
+                <TableColumn fx:id="roomCol" text="%ops.col.room" prefWidth="160"/>
+                <TableColumn fx:id="seatCol" text="%ops.col.seat" prefWidth="90"/>
+                <TableColumn fx:id="attendanceCol" text="%ops.col.attendance" prefWidth="120"/>
+            </columns>
+            <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/></columnResizePolicy>
+            <placeholder><Label fx:id="emptyLabel" text="%myExams.empty" styleClass="muted"/></placeholder>
+        </TableView>
+    </VBox>
+  </VBox>
+  <BusyOverlay fx:id="busy"/>
+</StackPane>

@@ -117,6 +117,9 @@ public final class Navigator {
         if (role.has(Permission.ALLOCATE_PROCTORS)) {
             return View.EXAM_SCHEDULE;
         }
-        return role.has(Permission.VIEW_ALL_SCHEDULES) ? View.DASHBOARD : View.MY_DUTIES;
+        if (role.has(Permission.VIEW_ALL_SCHEDULES)) {
+            return View.DASHBOARD;
+        }
+        return role.has(Permission.VIEW_OWN_EXAMS) ? View.MY_EXAMS : View.MY_DUTIES;
     }
 }

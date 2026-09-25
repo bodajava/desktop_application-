@@ -3,7 +3,10 @@ package com.examhalls.integration;
 import com.examhalls.config.DatabaseConnection;
 import com.examhalls.config.TransactionManager;
 import com.examhalls.exception.AppException;
+import com.examhalls.model.AttendanceStatus;
+import com.examhalls.model.ExamSchedule;
 import com.examhalls.model.Student;
+import com.examhalls.model.StudentExamRow;
 import com.examhalls.security.AuthenticatedUser;
 import com.examhalls.service.AuthService;
 import com.examhalls.service.MasterDataService;
@@ -105,6 +108,30 @@ class StudentImportServiceTest {
 
             AuthenticatedUser second = auth.login("stu-import-03", "NewPass2026".toCharArray());
             assertFalse(second.mustChangePassword(), "cleared after the forced change");
+            auth.logout();
+            auth.login("admin", "Admin@2026".toCharArray());
+            return null;
+        });
+    }
+
+    @Test
+    void studentSeesOwnUpcomingExamAfterSeating() throws Exception {
+        tx.runAndRollback(() -> {
+            imports.importRows(List.of(
+                    new StudentImportService.Row("stu-import-04", "Import Test Four", "Grade 10", "a", null)));
+
+            long math10 = reg.examScheduleDao().findAll().stream()
+                    .filter(x -> x.courseCode().equals("MATH-10")).map(ExamSchedule::examId).findFirst().orElseThrow();
+            reg.examManagementService().generateSeating(math10);
+
+            auth.login("stu-import-04", "STU-IMPORT-04".toCharArray());
+            List<StudentExamRow> exams = reg.examManagementService().getMyExams();
+            StudentExamRow row = exams.stream().filter(e -> e.courseCode().equals("MATH-10")).findFirst()
+                    .orElseThrow(() -> new AssertionError("the newly imported student should be seated for MATH-10"));
+            assertEquals(AttendanceStatus.ABSENT_PENDING, row.attendanceStatus());
+            assertNotNull(row.seatNumber());
+            assertNotNull(row.roomCode());
+
             auth.logout();
             auth.login("admin", "Admin@2026".toCharArray());
             return null;
