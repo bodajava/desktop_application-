@@ -12,7 +12,7 @@ import static com.examhalls.security.Permission.*;
  * Application roles. Constant names must equal ROLES.ROLE_NAME in the database.
  * Permission matrix:
  * <pre>
- *                      ADMIN  CONTROL  HEAD  TEACHER
+ *                      ADMIN  CONTROL  HEAD  TEACHER  STUDENT
  * MANAGE_USERS           x
  * MANAGE_MASTER_DATA     x      x
  * GENERATE_SEATING       x      x
@@ -20,7 +20,7 @@ import static com.examhalls.security.Permission.*;
  * SUBSTITUTE_PROCTOR     x      x
  * MARK_ATTENDANCE        x      x       x
  * VIEW_ALL_SCHEDULES     x      x       x
- * VIEW_OWN_SCHEDULE      x      x       x      x
+ * VIEW_OWN_SCHEDULE      x      x       x      x        x
  * VIEW_REPORTS           x      x       x
  * VIEW_AUDIT             x      x
  * </pre>
@@ -30,7 +30,8 @@ public enum RoleType {
     CONTROL_OFFICER(EnumSet.of(MANAGE_MASTER_DATA, GENERATE_SEATING, ALLOCATE_PROCTORS, SUBSTITUTE_PROCTOR,
             MARK_ATTENDANCE, VIEW_ALL_SCHEDULES, VIEW_OWN_SCHEDULE, VIEW_REPORTS, VIEW_AUDIT)),
     COMMITTEE_HEAD(EnumSet.of(MARK_ATTENDANCE, VIEW_ALL_SCHEDULES, VIEW_OWN_SCHEDULE, VIEW_REPORTS)),
-    TEACHER(EnumSet.of(VIEW_OWN_SCHEDULE));
+    TEACHER(EnumSet.of(VIEW_OWN_SCHEDULE)),
+    STUDENT(EnumSet.of(VIEW_OWN_SCHEDULE));
 
     private final Set<Permission> permissions;
 
