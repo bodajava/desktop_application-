@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.examhalls.ui.BusyOverlay?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.OccupancyGridController">
+    <VBox styleClass="content">
+        <HBox styleClass="toolbar" alignment="CENTER_LEFT">
+            <Button fx:id="prevButton" text="‹" onAction="#onPrev" styleClass="button-secondary, icon-button"/>
+            <DatePicker fx:id="datePicker" prefWidth="170"/>
+            <Button fx:id="nextButton" text="›" onAction="#onNext" styleClass="button-secondary, icon-button"/>
+            <Button text="%grid.nextExamDay" onAction="#onNextExamDay" styleClass="button-secondary, toolbar-button" minWidth="-Infinity"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <HBox fx:id="legend" styleClass="legend" alignment="CENTER_LEFT"/>
+        </HBox>
+
+        <HBox fx:id="summaryRow" styleClass="card, summary-card" alignment="CENTER_LEFT">
+            <VBox styleClass="metric"><Label text="%grid.metric.rooms" styleClass="metric-label"/><Label fx:id="roomsValue" styleClass="metric-value"/></VBox>
+            <VBox styleClass="metric"><Label text="%grid.metric.students" styleClass="metric-label"/><Label fx:id="studentsValue" styleClass="metric-value"/></VBox>
+            <VBox styleClass="metric"><Label text="%grid.metric.staff" styleClass="metric-label"/><Label fx:id="staffValue" styleClass="metric-value"/></VBox>
+            <VBox styleClass="metric"><Label text="%grid.metric.understaffed" styleClass="metric-label"/><Label fx:id="understaffedValue" styleClass="metric-value"/></VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="%grid.hint" styleClass="muted"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+            <GridPane fx:id="grid" styleClass="occupancy-grid"/>
+        </ScrollPane>
+    </VBox>
+    <BusyOverlay fx:id="busy"/>
+</StackPane>

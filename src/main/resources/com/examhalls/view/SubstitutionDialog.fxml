@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.examhalls.ui.BusyOverlay?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.SubstitutionDialogController"
+           styleClass="app-root" prefWidth="860" prefHeight="700">
+    <VBox styleClass="dialog-content">
+        <VBox styleClass="dialog-header">
+            <Label text="%sub.title" styleClass="page-title"/>
+            <Label text="%sub.subtitle" styleClass="muted" wrapText="true"/>
+        </VBox>
+
+        <!-- Assignment being replaced -->
+        <VBox styleClass="card, card-compact">
+            <Label text="%sub.current" styleClass="section-label"/>
+            <GridPane styleClass="detail-grid">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="30"/>
+                    <ColumnConstraints percentWidth="18"/>
+                    <ColumnConstraints percentWidth="12"/>
+                    <ColumnConstraints percentWidth="40"/>
+                </columnConstraints>
+                <VBox GridPane.columnIndex="0"><Label text="%ops.col.teacher" styleClass="metric-label"/><Label fx:id="teacherValue" styleClass="detail-value" wrapText="true"/></VBox>
+                <VBox GridPane.columnIndex="1"><Label text="%ops.col.role" styleClass="metric-label"/><Label fx:id="roleValue" styleClass="detail-value"/></VBox>
+                <VBox GridPane.columnIndex="2"><Label text="%ops.col.room" styleClass="metric-label"/><Label fx:id="roomValue" styleClass="detail-value"/></VBox>
+                <VBox GridPane.columnIndex="3"><Label text="%ops.exam" styleClass="metric-label"/><Label fx:id="examValue" styleClass="detail-value" wrapText="true"/></VBox>
+            </GridPane>
+        </VBox>
+
+        <!-- Best match: the 1-click path -->
+        <HBox fx:id="suggestionBox" styleClass="suggestion-box" alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="%sub.bestMatch" styleClass="section-label"/>
+                <Label fx:id="suggestionLabel" styleClass="suggestion-name" wrapText="true"/>
+                <Label fx:id="suggestionDetail" styleClass="muted"/>
+            </VBox>
+            <Button fx:id="oneClickButton" text="%sub.oneClick" onAction="#onOneClick" styleClass="button-danger, button-large" minWidth="-Infinity"/>
+        </HBox>
+
+        <!-- Manual choice -->
+        <VBox styleClass="card, table-card" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="candidatesTitle" text="%sub.candidates" styleClass="card-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <CheckBox fx:id="showAllCheck" text="%sub.showAll"/>
+            </HBox>
+            <TableView fx:id="candidateTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="cNameCol" text="%ops.col.teacher" prefWidth="220"/>
+                    <TableColumn fx:id="cCodeCol" text="%ops.col.code" prefWidth="100"/>
+                    <TableColumn fx:id="cDeptCol" text="%sub.col.dept" prefWidth="150"/>
+                    <TableColumn fx:id="cHoursCol" text="%sub.col.hours" prefWidth="90"/>
+                    <TableColumn fx:id="cStatusCol" text="%sub.col.status" prefWidth="240"/>
+                </columns>
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/></columnResizePolicy>
+                <placeholder><Label text="%sub.noCandidates" styleClass="muted"/></placeholder>
+            </TableView>
+        </VBox>
+
+        <VBox styleClass="form-field">
+            <Label text="%sub.reason" styleClass="field-label"/>
+            <ComboBox fx:id="reasonCombo" editable="true" maxWidth="Infinity" promptText="%sub.reasonPrompt"/>
+        </VBox>
+
+        <Label fx:id="errorLabel" styleClass="form-error" wrapText="true" maxWidth="Infinity" managed="false" visible="false"/>
+
+        <HBox styleClass="dialog-buttons" alignment="CENTER_RIGHT">
+            <Button text="%common.cancel" onAction="#onCancel" cancelButton="true" styleClass="button-secondary"/>
+            <Button fx:id="manualButton" text="%sub.useSelected" onAction="#onUseSelected" styleClass="button-primary"/>
+        </HBox>
+    </VBox>
+    <BusyOverlay fx:id="busy"/>
+</StackPane>

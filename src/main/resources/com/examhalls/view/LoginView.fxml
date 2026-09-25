@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.LoginController"
+           styleClass="login-root">
+
+    <VBox styleClass="login-card" maxWidth="420" maxHeight="-Infinity">
+        <VBox styleClass="login-brand">
+            <Label text="ExamHalls" styleClass="login-brand-title"/>
+            <Label text="%login.tagline" styleClass="muted" wrapText="true"/>
+        </VBox>
+
+        <VBox styleClass="login-heading">
+            <Label text="%login.title" styleClass="login-title"/>
+            <Label text="%login.subtitle" styleClass="muted" wrapText="true"/>
+        </VBox>
+
+        <Label fx:id="noticeLabel" styleClass="form-notice" wrapText="true" maxWidth="Infinity" managed="false" visible="false"/>
+
+        <VBox styleClass="form-field">
+            <Label text="%login.username" styleClass="field-label" labelFor="$usernameField"/>
+            <TextField fx:id="usernameField" promptText="%login.usernamePrompt"/>
+        </VBox>
+
+        <VBox styleClass="form-field">
+            <Label text="%login.password" styleClass="field-label" labelFor="$passwordField"/>
+            <PasswordField fx:id="passwordField" promptText="%login.passwordPrompt"/>
+        </VBox>
+
+        <Label fx:id="errorLabel" styleClass="form-error" wrapText="true" maxWidth="Infinity" managed="false" visible="false"/>
+
+        <Button fx:id="signInButton" text="%login.signIn" onAction="#onSignIn" defaultButton="true"
+                styleClass="button-primary, button-large" maxWidth="Infinity">
+            <graphic>
+                <ProgressIndicator fx:id="spinner" styleClass="button-spinner" visible="false" managed="false"/>
+            </graphic>
+        </Button>
+
+        <HBox styleClass="lang-switch">
+            <fx:define>
+                <ToggleGroup fx:id="languageGroup"/>
+            </fx:define>
+            <ToggleButton fx:id="englishToggle" text="English" toggleGroup="$languageGroup" onAction="#onLanguage"
+                          styleClass="lang-toggle"/>
+            <ToggleButton fx:id="arabicToggle" text="العربية" toggleGroup="$languageGroup" onAction="#onLanguage"
+                          styleClass="lang-toggle"/>
+        </HBox>
+    </VBox>
+
+    <Label text="%login.footer" styleClass="login-footer" StackPane.alignment="BOTTOM_CENTER"/>
+</StackPane>

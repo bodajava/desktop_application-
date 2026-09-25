@@ -1,0 +1,9 @@
+target/
+logs/
+config/application.properties
+*.iml
+.idea/
+.vscode/
+.DS_Store
+.local/
+.gstack/

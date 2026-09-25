@@ -1,0 +1,69 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    <!-- Lab-ready bundle: unzip, copy config/application.properties.example, run run-app.bat / run-app.sh -->
+    <id>dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
+
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.artifactId}-${project.version}-all.jar</source>
+            <destName>examhalls.jar</destName>
+        </file>
+        <file>
+            <source>run-app.bat</source>
+            <lineEnding>crlf</lineEnding>
+        </file>
+        <file>
+            <source>run-app.sh</source>
+            <lineEnding>lf</lineEnding>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>config/application.properties.example</source>
+            <outputDirectory>config</outputDirectory>
+        </file>
+        <file>
+            <source>README.md</source>
+        </file>
+        <file>
+            <source>DOCUMENTATION.md</source>
+        </file>
+    </files>
+
+    <fileSets>
+        <!-- optional: the PDF print of the documentation, when it has been generated -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>DOCUMENTATION.pdf</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>database</directory>
+            <outputDirectory>database</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+                <include>README.md</include>
+                <include>*.bat</include>
+            </includes>
+            <excludes>
+                <exclude>_*</exclude>
+            </excludes>
+            <lineEnding>keep</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>database</directory>
+            <outputDirectory>database</outputDirectory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <lineEnding>lf</lineEnding>
+        </fileSet>
+    </fileSets>
+</assembly>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.examhalls.ui.BusyOverlay?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Content is assembled by the controller from CrudPanel / FormDialog building blocks. -->
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.AcademicsController">
+    <VBox fx:id="container" styleClass="content"/>
+    <BusyOverlay fx:id="busy"/>
+</StackPane>

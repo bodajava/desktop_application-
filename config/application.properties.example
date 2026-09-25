@@ -1,0 +1,11 @@
+# Copy to config/application.properties (git-ignored) and fill in local credentials.
+db.url=jdbc:oracle:thin:@//localhost:1521/FREEPDB1
+db.username=EXAM_ADMIN
+db.password=change_me
+db.pool.leakDetectionThresholdMs=20000
+
+# Optional security settings (defaults shown)
+#security.login.maxAttempts=5
+#security.login.lockMinutes=5
+# Minutes without keyboard/mouse activity before automatic sign-out (0 = never)
+#security.session.idleTimeoutMinutes=15

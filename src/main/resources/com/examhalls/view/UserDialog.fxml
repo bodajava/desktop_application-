@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.examhalls.ui.BusyOverlay?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.UserDialogController"
+           styleClass="app-root" prefWidth="520">
+    <VBox styleClass="dialog-content">
+        <VBox styleClass="dialog-header">
+            <Label fx:id="titleLabel" styleClass="page-title"/>
+            <Label fx:id="subtitleLabel" styleClass="muted" wrapText="true"/>
+        </VBox>
+
+        <VBox fx:id="accountBox" styleClass="card, card-compact">
+            <VBox styleClass="form-field">
+                <Label text="%login.username" styleClass="field-label"/>
+                <TextField fx:id="usernameField" promptText="%users.usernameHint"/>
+            </VBox>
+            <VBox styleClass="form-field">
+                <Label text="%ops.col.role" styleClass="field-label"/>
+                <ComboBox fx:id="roleCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox styleClass="form-field">
+                <Label fx:id="teacherLabel" text="%users.col.teacher" styleClass="field-label"/>
+                <ComboBox fx:id="teacherCombo" maxWidth="Infinity"/>
+            </VBox>
+            <VBox styleClass="form-field">
+                <Label text="%users.col.fullName" styleClass="field-label"/>
+                <TextField fx:id="fullNameField"/>
+            </VBox>
+        </VBox>
+
+        <VBox fx:id="passwordBox" styleClass="card, card-compact">
+            <VBox styleClass="form-field">
+                <Label text="%users.password" styleClass="field-label"/>
+                <PasswordField fx:id="passwordField"/>
+            </VBox>
+            <VBox styleClass="form-field">
+                <Label text="%users.confirmPassword" styleClass="field-label"/>
+                <PasswordField fx:id="confirmField"/>
+            </VBox>
+            <Label text="%error.WEAK_PASSWORD" styleClass="muted" wrapText="true"/>
+        </VBox>
+
+        <Label fx:id="errorLabel" styleClass="form-error" wrapText="true" maxWidth="Infinity" managed="false" visible="false"/>
+
+        <HBox styleClass="dialog-buttons" alignment="CENTER_RIGHT">
+            <Button text="%common.cancel" onAction="#onCancel" cancelButton="true" styleClass="button-secondary"/>
+            <Button fx:id="saveButton" text="%users.save" onAction="#onSave" defaultButton="true" styleClass="button-primary"/>
+        </HBox>
+    </VBox>
+    <BusyOverlay fx:id="busy"/>
+</StackPane>

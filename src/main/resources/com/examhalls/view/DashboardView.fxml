@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.examhalls.ui.BusyOverlay?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Executive Analytics & Operations Center: KPIs, charts, focus-day panels, quick actions. -->
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.examhalls.controller.DashboardController">
+    <ScrollPane fitToWidth="true" styleClass="content-scroll">
+        <VBox styleClass="content, dashboard">
+
+            <!-- ======================== header ======================== -->
+            <HBox styleClass="dash-header" alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" spacing="2">
+                    <Label fx:id="welcomeLabel" styleClass="dash-title"/>
+                    <Label fx:id="focusLabel" styleClass="muted" wrapText="true"/>
+                </VBox>
+                <Label fx:id="updatedLabel" styleClass="muted" minWidth="-Infinity"/>
+                <Button text="%dashboard.refresh" onAction="#onRefresh" styleClass="button-secondary" minWidth="-Infinity"/>
+            </HBox>
+
+            <!-- ======================== KPI cards ======================== -->
+            <GridPane styleClass="dash-grid">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                    <ColumnConstraints percentWidth="20"/>
+                </columnConstraints>
+                <VBox fx:id="examsCard" styleClass="card, kpi-card" GridPane.columnIndex="0">
+                    <Label text="%dashboard.kpi.exams" styleClass="kpi-title" wrapText="true"/>
+                    <Label fx:id="examsValue" text="—" styleClass="kpi-value"/>
+                    <Label fx:id="examsHint" styleClass="kpi-hint" wrapText="true"/>
+                </VBox>
+                <VBox fx:id="seatsCard" styleClass="card, kpi-card" GridPane.columnIndex="1">
+                    <Label text="%dashboard.kpi.seats" styleClass="kpi-title" wrapText="true"/>
+                    <Label fx:id="seatsValue" text="—" styleClass="kpi-value"/>
+                    <ProgressBar fx:id="seatsBar" progress="0" styleClass="kpi-bar" maxWidth="Infinity"/>
+                    <Label fx:id="seatsHint" styleClass="kpi-hint" wrapText="true"/>
+                </VBox>
+                <VBox fx:id="coverageCard" styleClass="card, kpi-card" GridPane.columnIndex="2">
+                    <Label text="%dashboard.kpi.coverage" styleClass="kpi-title" wrapText="true"/>
+                    <Label fx:id="coverageValue" text="—" styleClass="kpi-value"/>
+                    <ProgressBar fx:id="coverageBar" progress="0" styleClass="kpi-bar" maxWidth="Infinity"/>
+                    <Label fx:id="coverageHint" styleClass="kpi-hint" wrapText="true"/>
+                </VBox>
+                <VBox fx:id="alertsCard" styleClass="card, kpi-card" GridPane.columnIndex="3">
+                    <Label text="%dashboard.kpi.alerts" styleClass="kpi-title" wrapText="true"/>
+                    <Label fx:id="alertsValue" text="—" styleClass="kpi-value"/>
+                    <Label fx:id="alertsHint" styleClass="kpi-hint" wrapText="true"/>
+                </VBox>
+                <VBox fx:id="teachersCard" styleClass="card, kpi-card" GridPane.columnIndex="4">
+                    <Label text="%dashboard.kpi.teachers" styleClass="kpi-title" wrapText="true"/>
+                    <Label fx:id="teachersValue" text="—" styleClass="kpi-value"/>
+                    <Label fx:id="teachersHint" styleClass="kpi-hint" wrapText="true"/>
+                </VBox>
+            </GridPane>
+
+            <!-- ======================== charts ======================== -->
+            <GridPane styleClass="dash-grid">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="60"/>
+                    <ColumnConstraints percentWidth="40"/>
+                </columnConstraints>
+                <VBox styleClass="card, chart-card" GridPane.columnIndex="0">
+                    <Label text="%dashboard.chart.capacityTitle" styleClass="card-title"/>
+                    <Label text="%dashboard.chart.capacitySubtitle" styleClass="muted" wrapText="true"/>
+                    <StackPane fx:id="capacityHolder" styleClass="chart-holder" VBox.vgrow="ALWAYS"/>
+                </VBox>
+                <VBox styleClass="card, chart-card" GridPane.columnIndex="1">
+                    <Label text="%dashboard.chart.allocationTitle" styleClass="card-title"/>
+                    <Label text="%dashboard.chart.allocationSubtitle" styleClass="muted" wrapText="true"/>
+                    <StackPane fx:id="donutHolder" styleClass="chart-holder" VBox.vgrow="ALWAYS"/>
+                    <FlowPane fx:id="donutLegend" styleClass="dash-legend"/>
+                </VBox>
+            </GridPane>
+
+            <VBox styleClass="card, chart-card">
+                <Label text="%dashboard.chart.deptTitle" styleClass="card-title"/>
+                <Label fx:id="deptSubtitle" styleClass="muted" wrapText="true"/>
+                <StackPane fx:id="deptHolder" styleClass="chart-holder"/>
+            </VBox>
+
+            <!-- ======================== operations panels ======================== -->
+            <GridPane styleClass="dash-grid">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="64"/>
+                    <ColumnConstraints percentWidth="36"/>
+                </columnConstraints>
+                <VBox styleClass="card" GridPane.columnIndex="0" GridPane.valignment="TOP">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="focusTitle" styleClass="card-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="focusBadge" styleClass="badge" visible="false"/>
+                    </HBox>
+                    <Label text="%dashboard.focus.hint" styleClass="muted" wrapText="true"/>
+                    <TableView fx:id="focusTable" styleClass="focus-table"/>
+                </VBox>
+
+                <VBox styleClass="dash-column" GridPane.columnIndex="1" GridPane.valignment="TOP">
+                    <VBox styleClass="card">
+                        <Label text="%dashboard.actions.title" styleClass="card-title"/>
+                        <Label fx:id="actionsHint" styleClass="muted" wrapText="true"/>
+                        <Button fx:id="jumpButton" text="%dashboard.actions.seating" onAction="#onJumpToSeating"
+                                styleClass="button-primary, quick-action" maxWidth="Infinity"/>
+                        <Button fx:id="gridButton" text="%dashboard.actions.grid" onAction="#onOpenGrid"
+                                styleClass="button-secondary, quick-action" maxWidth="Infinity"/>
+                        <Button fx:id="dailyButton" text="%dashboard.actions.daily" onAction="#onDailyReport"
+                                styleClass="button-secondary, quick-action" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox fx:id="feedCard" styleClass="card">
+                        <Label text="%dashboard.feed.title" styleClass="card-title"/>
+                        <VBox fx:id="feedBox" styleClass="feed"/>
+                    </VBox>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </ScrollPane>
+    <BusyOverlay fx:id="busy"/>
+</StackPane>
