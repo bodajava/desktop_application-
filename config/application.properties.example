@@ -9,3 +9,13 @@ db.pool.leakDetectionThresholdMs=20000
 #security.login.lockMinutes=5
 # Minutes without keyboard/mouse activity before automatic sign-out (0 = never)
 #security.session.idleTimeoutMinutes=15
+
+# Outgoing mail (Gmail SMTP + App Password: myaccount.google.com/security -> 2-Step
+# Verification -> App passwords). Used to email a student their login credentials right
+# after an admin import. Leave mail.smtp.username blank/absent to disable sending.
+# Can also be set via the MAIL_SMTP_USERNAME / MAIL_SMTP_APP_PASSWORD environment variables
+# instead of this file.
+mail.smtp.host=smtp.gmail.com
+mail.smtp.port=587
+#mail.smtp.username=your.school@gmail.com
+#mail.smtp.appPassword=change_me

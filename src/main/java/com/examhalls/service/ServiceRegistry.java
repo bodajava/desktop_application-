@@ -99,7 +99,8 @@ public final class ServiceRegistry {
         this.occupancyService = new OccupancyService(session, examScheduleDao, examPeriodDao, roomDao, reportDao);
         this.reportService = new ReportService(session, examScheduleDao, seatingDao, reportDao,
                 examManagementService, occupancyService, teacherDao);
-        this.studentImportService = new StudentImportService(tx, session, studentDao, userDao, roleDao, hasher);
+        this.studentImportService = new StudentImportService(tx, session, studentDao, userDao, roleDao, hasher,
+                new EmailService());
     }
 
     /** Application-wide instance on the HikariCP pool (created on first use). */

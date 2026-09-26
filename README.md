@@ -19,6 +19,8 @@ APP_USER_PASSWORD=<app-password> database/install-docker.sh
 
 # 3. Connection settings
 cp config/application.properties.example config/application.properties   # then set db.password
+# Optional: mail.smtp.username / mail.smtp.appPassword (Gmail App Password) to email each
+# imported student their login credentials. Leave unset to skip that feature entirely.
 
 # 4. Run
 mvn javafx:run                       # development

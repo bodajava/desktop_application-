@@ -193,6 +193,8 @@ public final class DatabaseConnection {
         overrideFromEnv(props, "db.url", "DB_URL");
         overrideFromEnv(props, "db.username", "DB_USERNAME");
         overrideFromEnv(props, "db.password", "DB_PASSWORD");
+        overrideFromEnv(props, "mail.smtp.username", "MAIL_SMTP_USERNAME");
+        overrideFromEnv(props, "mail.smtp.appPassword", "MAIL_SMTP_APP_PASSWORD");
 
         for (String key : props.stringPropertyNames()) {
             String sys = System.getProperty(key);

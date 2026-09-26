@@ -22,6 +22,10 @@ docker exec -u root "$CONTAINER" chmod -R a+rX /tmp/examhalls-db   # docker cp c
 
 echo "Running install.sql ..."
 docker exec -w /tmp/examhalls-db "$CONTAINER" sqlplus -S -L "$CONNECT" @install.sql
+echo "Running 06_student_accounts.sql ..."
+docker exec -w /tmp/examhalls-db "$CONTAINER" sqlplus -S -L "$CONNECT" @06_student_accounts.sql
+echo "Running 07_student_exams.sql ..."
+docker exec -w /tmp/examhalls-db "$CONTAINER" sqlplus -S -L "$CONNECT" @07_student_exams.sql
 echo
 echo "Running the smoke test ..."
 docker exec -w /tmp/examhalls-db "$CONTAINER" sqlplus -S -L "$CONNECT" @05_smoke_test.sql | grep -E "PASS|FAIL|ABORTED|CHECK"

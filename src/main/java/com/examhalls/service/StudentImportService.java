@@ -46,15 +46,17 @@ public class StudentImportService {
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final PasswordHasher hasher;
+    private final EmailService emailService;
 
     public StudentImportService(TransactionManager tx, UserSession session, StudentDao studentDao, UserDao userDao,
-                                RoleDao roleDao, PasswordHasher hasher) {
+                                RoleDao roleDao, PasswordHasher hasher, EmailService emailService) {
         this.tx = tx;
         this.session = session;
         this.studentDao = studentDao;
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.hasher = hasher;
+        this.emailService = emailService;
     }
 
     public List<RowResult> importRows(List<Row> rows) {
@@ -72,6 +74,7 @@ public class StudentImportService {
                 results.add(r);
                 if (r.outcome() == Outcome.CREATED_WITH_LOGIN) {
                     created++;
+                    emailCredentialsIfPossible(row, r.studentCode());
                 } else if (r.outcome() == Outcome.ERROR) {
                     errors++;
                 } else {
@@ -136,6 +139,19 @@ public class StudentImportService {
         }
         return new RowResult(rowNumber, code, Outcome.CREATED_WITH_LOGIN,
                 isNew ? "Student and login created" : "Login created for existing student");
+    }
+
+    /** Best-effort: a mail failure never fails the import, it just gets logged. */
+    private void emailCredentialsIfPossible(Row row, String normalizedCode) {
+        if (blank(row.email()) || !emailService.isConfigured()) {
+            return;
+        }
+        try {
+            emailService.sendStudentCredentials(row.email().trim(), row.fullName().trim(), normalizedCode, normalizedCode);
+        } catch (Exception e) {
+            log.warn("Could not email login credentials to {} for student {}: {}", row.email().trim(), normalizedCode,
+                    e.getMessage());
+        }
     }
 
     private static boolean blank(String s) {
